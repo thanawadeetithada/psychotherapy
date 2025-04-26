@@ -98,7 +98,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         height: 50px;
         border-radius: 50%;
         flex-shrink: 0;
+        object-fit: cover;
     }
+
 
     .login-box {
         background: #3498db;
@@ -166,28 +168,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <div class="review">
-            <img src="img/logo.png" alt="Mind Logo">
+            <img src="img/review1.jpg" alt="Mind Logo">
             <div class="text">
-                <p><strong>ชื่อ xxx</strong></p>
-                <p>รีวิว : xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</p>
+                <!-- <p><strong>ชื่อ xxx</strong></p> -->
+                <p style="margin-bottom: 0px;">
+                    <strong>รีวิว :</strong> ใช้ง่าย คุยกับจิตแพทย์ได้ทันใจ รู้สึกสบายใจขึ้นเยอะ
+                </p>
             </div>
         </div>
 
         <div class="review">
-            <img src="img/logo.png" alt="Mind Logo">
+            <img src="img/review2.jpg" alt="Mind Logo">
             <div class="text">
-                <p><strong>ชื่อ xxx</strong></p>
-                <p>รีวิว : xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</p>
+                <!-- <p><strong>ชื่อ xxx</strong></p> -->
+                <p style="margin-bottom: 0px;">
+                    <strong>รีวิว :</strong> แอปดีมาก สะดวก รวดเร็ว ได้รับคำปรึกษาที่เข้าใจจริง ๆ
+                </p>
             </div>
         </div>
 
         <div class="login-box">
             <form method="POST" action="" autocomplete="off">
                 <div class="mt-3 mb-3">
-                    <input type="text" name="username" placeholder="ชื่อผู้ใช้" class="form-control" id="exampleFormControlInput1" required>
+                    <input type="text" name="username" placeholder="ชื่อผู้ใช้" class="form-control"
+                        id="exampleFormControlInput1" required>
                 </div>
                 <div class="mb-3">
-                    <input type="password" name="password" placeholder="รหัสผ่าน" class="form-control" id="exampleFormControlInput1" required>
+                    <input type="password" name="password" placeholder="รหัสผ่าน" class="form-control"
+                        id="exampleFormControlInput1" required>
                 </div>
                 <div class="forgot-password">
                     <a class="forgotpassword-text" href="forgotpassword.php">ลืมรหัสผ่าน</a>
