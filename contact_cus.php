@@ -1,15 +1,18 @@
 <?php
 session_start();
+require_once 'db.php';
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit;
 }
 if ($_SESSION['user_role'] !== 'user') {
-  echo "คุณไม่ได้รับสิทธิ์เข้าถึงหน้านี้";
-  exit;
+    echo "คุณไม่ได้รับสิทธิ์เข้าถึงหน้านี้";
+    exit;
 }
 
+$sql = "SELECT id, fullname, availability_status FROM users WHERE user_role = 'doctor'";
+$result = $conn->query($sql);
 ?>
 <!DOCTYPE html>
 <html lang="th">
@@ -67,7 +70,6 @@ if ($_SESSION['user_role'] !== 'user') {
         border: none !important;
         box-shadow: none !important;
     }
-
     </style>
 </head>
 
@@ -88,7 +90,6 @@ if ($_SESSION['user_role'] !== 'user') {
                     <li><a class="dropdown-item" href="logout.php">Logout</a></li>
                 </ul>
             </div>
-
         </div>
     </nav>
 
@@ -96,41 +97,31 @@ if ($_SESSION['user_role'] !== 'user') {
 
     <div class="container py-4 d-flex flex-column align-items-center">
 
-        <div class="card-custom">
-            <p><strong>ชื่อแพทย์ : </strong>xxxxxxxxxxxxxxx</p>
-            <p><strong>สถานะ : </strong>ว่าง</p>
-            <p>ราคา <strong>300</strong> บาท/<strong>30</strong> นาที</p>
-        </div>
+        <?php
+if ($result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+        $fullname = htmlspecialchars($row['fullname']);
+        $status = $row['availability_status'];
 
-        <div class="card-custom">
-            <p><strong>ชื่อแพทย์ : </strong>xxxxxxxxxxxxxxx</p>
-            <p><strong>สถานะ : </strong>กรุณารอ 2 คิว</p>
-            <p>ราคา <strong>300</strong> บาท/<strong>30</strong> นาที</p>
-        </div>
+        if ($status == 'available') {
+            $status_text = 'ว่าง';
+        } else {
+            $status_text = 'ไม่ว่าง';
+        }
+        ?>
+        <a href="select_consult.php?doctor_id=<?php echo $row['id']; ?>" class="card-custom text-decoration-none">
+            <p><strong>ชื่อแพทย์ : </strong><?php echo $fullname; ?></p>
+            <p><strong>สถานะ : </strong><?php echo $status_text; ?></p>
 
-        <div class="card-custom">
-            <p><strong>ชื่อแพทย์ : </strong>xxxxxxxxxxxxxxx</p>
-            <p><strong>สถานะ : </strong>กรุณารอ 5 คิว</p>
-            <p>ราคา <strong>300</strong> บาท/<strong>30</strong> นาที</p>
-        </div>
+        </a>
+        <?php
+    }
+} else {
+    echo "<p>ไม่พบข้อมูลแพทย์</p>";
+}
+$conn->close();
+?>
 
-        <div class="card-custom">
-            <p><strong>ชื่อแพทย์ : </strong>xxxxxxxxxxxxxxx</p>
-            <p><strong>สถานะ : </strong>ไม่ว่าง</p>
-            <p>ราคา <strong>300</strong> บาท/<strong>30</strong> นาที</p>
-        </div>
-
-        <div class="card-custom">
-            <p><strong>ชื่อแพทย์ : </strong>xxxxxxxxxxxxxxx</p>
-            <p><strong>สถานะ : </strong>ไม่ว่าง</p>
-            <p>ราคา <strong>300</strong> บาท/<strong>30</strong> นาที</p>
-        </div>
-
-        <div class="card-custom">
-            <p><strong>ชื่อแพทย์ : </strong>xxxxxxxxxxxxxxx</p>
-            <p><strong>สถานะ : </strong>ไม่ว่าง</p>
-            <p>ราคา <strong>300</strong> บาท/<strong>30</strong> นาที</p>
-        </div>
 
     </div>
 
