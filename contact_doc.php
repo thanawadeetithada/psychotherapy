@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once 'db.php';
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: index.php");
@@ -9,6 +10,13 @@ if ($_SESSION['user_role'] !== 'doctor') {
   echo "คุณไม่ได้รับสิทธิ์เข้าถึงหน้านี้";
   exit;
 }
+
+$stmt = $conn->prepare("SELECT availability_status FROM users WHERE id = ?");
+$stmt->bind_param("i", $_SESSION['user_id']);
+$stmt->execute();
+$stmt->bind_result($availability_status);
+$stmt->fetch();
+$stmt->close();
 
 ?>
 <!DOCTYPE html>
@@ -67,11 +75,17 @@ if ($_SESSION['user_role'] !== 'doctor') {
         border: none !important;
         box-shadow: none !important;
     }
+
+    .status-toogle {
+        margin-right: 1.5rem;
+        float: right;
+        font-size: 1.2rem;
+    }
     </style>
 </head>
 
 <body>
-<nav class="navbar navbar-light bg-white position-relative">
+    <nav class="navbar navbar-light bg-white position-relative">
         <div class="container-fluid">
             <a class="btn btn-link back-button" href="javascript:history.back()">
                 <i class="fa-solid fa-arrow-left me-1"></i>
@@ -90,8 +104,14 @@ if ($_SESSION['user_role'] !== 'doctor') {
 
         </div>
     </nav>
-
     <h2 style="text-align: center;">ลูกค้าที่ติดต่อ</h2>
+    <div class="status-toogle">
+        <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="doctorStatusSwitch" <?php if ($availability_status == 'available') echo 'checked'; ?>>
+        <label class="form-check-label" for="doctorStatusSwitch" id="doctorStatusLabel">ว่าง</label>
+        </div>
+    </div>
+    <br>
     <div class="container py-4 pt-0 d-flex flex-column align-items-center">
 
         <div class="card-custom">
@@ -132,6 +152,35 @@ if ($_SESSION['user_role'] !== 'doctor') {
 
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.getElementById('doctorStatusSwitch').addEventListener('change', function() {
+        const label = document.getElementById('doctorStatusLabel');
+        const isChecked = this.checked;
+
+        // เปลี่ยนข้อความ
+        label.textContent = isChecked ? 'ว่าง' : 'ไม่ว่าง';
+
+        // ส่งข้อมูลไป update_status.php
+        fetch('update_status.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    status: isChecked ? 'available' : 'unavailable'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.message);
+            })
+            .catch(error => {
+                console.error('Error updating status:', error);
+            });
+    });
+    </script>
+
+
 </body>
 
 </html>
